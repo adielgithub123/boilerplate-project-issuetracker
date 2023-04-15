@@ -8,7 +8,7 @@ chai.use(chaiHttp);
 
 suite("Functional Tests", function () {
   var testId;
-  var invalidId = new ObjectId();
+  var invalidId = 'ABCDE';
   test("Test POST /api/issues/apitest for each field", (done) => {
     chai
       .request(server)
@@ -26,8 +26,8 @@ suite("Functional Tests", function () {
         if (err) {
           done();
         } else {
-          let text = res.text.split(":")[1];
-          testId = text.split('"')[1];
+          // let text = res.text.split(":")[1];
+          testId = res.body["_id"];
           assert.equal(res.status, 201);
           done();
         }
@@ -97,7 +97,7 @@ suite("Functional Tests", function () {
   test("Test GET /api/issues/apitest with multiple filters", (done) => {
     chai
       .request(server)
-      .get('/api/issues/apitest?issue_title="test"&issue_text="test"&open=true')
+      .get('/api/issues/apitest?issue_title=test&issue_text=test&open=true')
       .end((err, res) => {
         if (err) {
           done(err);
@@ -275,4 +275,7 @@ suite("Functional Tests", function () {
         }
       });
   });
+});
+after(function() {
+    chai.request(server).get('/api')
 });
